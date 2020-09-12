@@ -1,26 +1,35 @@
-create schema avaliacao;
+drop schema projeto_maven;
 
-use avaliacao;
+create schema projeto_maven;
 
+use projeto_maven;
+
+drop user 'user'@'localhost';
 create user 'user'@'localhost' identified by 'pass123';
 
-grant select, insert, delete, update on avaliacao.* to user@'localhost';
+grant select, insert, delete, update on projeto_maven.* to user@'localhost';
+
+
+create table usu_usuario(
+  usu_id bigint unsigned primary key auto_increment,
+  usu_nome_usuario varchar(50) not null,
+  usu_senha varchar(50) not null,
+  constraint usu_nome_usuario_uk unique (usu_nome_usuario)
+);
 
 create table pro_professor (
-  pro_id bigint unsigned primary key auto_increment,
-  pro_nome_usuario varchar(50) not null,
-  pro_senha varchar(50) not null,
+  pro_id bigint unsigned primary key,
   pro_titulo varchar(10),
-  constraint pro_nome_usuario_uk unique (pro_nome_usuario)
+  constraint pro_usu_fk foreign key (pro_id)
+    references usu_usuario(usu_id)
 );
 
 create table alu_aluno (
-  alu_id bigint unsigned primary key auto_increment,
-  alu_nome_usuario varchar(50) not null,
-  alu_senha varchar(50) not null,
+  alu_id bigint unsigned primary key,
   alu_ra bigint unsigned not null,
-  constraint alu_nome_usuario_uk unique (alu_nome_usuario),
-  constraint alu_ra_uk unique (alu_ra)
+  constraint alu_ra_uk unique (alu_ra),
+  constraint alu_usu_fk foreign key (alu_id)
+    references usu_usuario(usu_id)
 );
 
 create table tra_trabalho (
