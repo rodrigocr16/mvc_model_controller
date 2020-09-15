@@ -1,53 +1,19 @@
-drop schema projeto_maven;
+DROP SCHEMA PADROES_PROJETOS;
+CREATE SCHEMA PADROES_PROJETOS;
 
-create schema projeto_maven;
+USE PADROES_PROJETOS;
 
-use projeto_maven;
+DROP USER 'USER'@'LOCALHOST';
+CREATE USER 'USER'@'LOCALHOST' IDENTIFIED BY 'PASS123';
 
-drop user 'user'@'localhost';
-create user 'user'@'localhost' identified by 'pass123';
+GRANT SELECT, INSERT, DELETE, UPDATE ON PADROES_PROJETOS.* TO USER@'LOCALHOST';
 
-grant select, insert, delete, update on projeto_maven.* to user@'localhost';
+CREATE TABLE USU_USUARIO(
+    USU_ID BIGINT UNSIGNED AUTO_INCREMENT,
+    USU_NOME_USUARIO VARCHAR(50) NOT NULL,
+    USU_SENHA VARCHAR(50) NOT NULL,
+    USU_NOME_EXIBICAO VARCHAR(64),
 
-
-create table usu_usuario(
-  usu_id bigint unsigned primary key auto_increment,
-  usu_nome_usuario varchar(50) not null,
-  usu_senha varchar(50) not null,
-  constraint usu_nome_usuario_uk unique (usu_nome_usuario)
-);
-
-create table pro_professor (
-  pro_id bigint unsigned primary key,
-  pro_titulo varchar(10),
-  constraint pro_usu_fk foreign key (pro_id)
-    references usu_usuario(usu_id)
-);
-
-create table alu_aluno (
-  alu_id bigint unsigned primary key,
-  alu_ra bigint unsigned not null,
-  constraint alu_ra_uk unique (alu_ra),
-  constraint alu_usu_fk foreign key (alu_id)
-    references usu_usuario(usu_id)
-);
-
-create table tra_trabalho (
-  tra_id bigint unsigned primary key auto_increment,
-  tra_titulo varchar(50) not null,
-  tra_data_hora_entrega datetime not null,
-  tra_local_arquivo varchar(200) not null,
-  pro_avaliador_id bigint unsigned,
-  constraint tra_pro_fk foreign key (pro_avaliador_id)
-    references pro_professor (pro_id)
-);
-
-create table ent_entrega (
-  alu_id bigint unsigned,
-  tra_id bigint unsigned,
-  primary key (alu_id, tra_id),
-  constraint ent_alu_fk foreign key (alu_id)
-    references alu_aluno (alu_id),
-  constraint ent_tra_fk foreign key (tra_id)
-    references tra_trabalho (tra_id)
+    CONSTRAINT UK_USU_NOME_USUARIO UNIQUE (USU_NOME_USUARIO),
+    CONSTRAINT PK_USU_ID PRIMARY KEY (USU_ID)
 );

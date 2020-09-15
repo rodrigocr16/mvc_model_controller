@@ -1,4 +1,4 @@
-package br.gov.sp.fatec.projetomaven.entity;
+package br.gov.sp.fatec.padroesprojetos.entity;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -11,20 +11,29 @@ import javax.persistence.InheritanceType;
 
 
 @Entity
-@Table(name = "usu_usuario")
+@Table(name = "USU_USUARIO")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario { 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "usu_id")
+    @Column(name = "USU_ID")
     private Long id;
     
-    @Column(name = "usu_nome_usuario")
+    @Column(name = "USU_NOME_USUARIO")
     private String nomeUsuario;
 
-    @Column(name = "usu_senha")
+    @Column(name = "USU_SENHA")
     private String senha;
 
+    @Column(name = "USU_NOME_EXIBICAO")
+    private String nomeExibicao;
+
+
+    public Usuario(String nomeUsuario, String senha, String nomeExibicao){
+        this.nomeUsuario = nomeUsuario;
+        this.senha = senha;
+        this.nomeExibicao = nomeExibicao;
+    }
 
     public Long getId() {
         return id;
@@ -45,5 +54,12 @@ public class Usuario {
     }
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getNomeExibicao() {
+        return nomeExibicao;
+    }
+    public void setNomeExibicao(String nomeExibicao) {
+        this.nomeExibicao = nomeExibicao;
     }
 }
