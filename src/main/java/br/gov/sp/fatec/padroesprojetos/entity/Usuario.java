@@ -1,9 +1,12 @@
 package br.gov.sp.fatec.padroesprojetos.entity;
 
+import java.util.Set;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
@@ -15,6 +18,9 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USU_ID")
     private Long id;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "proprietario")
+    private Set<Personagem> personagens;
     
     @Column(name = "USU_NOME_USUARIO")
     private String nomeUsuario;
