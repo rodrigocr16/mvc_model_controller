@@ -32,12 +32,6 @@ public class Usuario {
     private String nomeExibicao;
 
 
-    public Usuario(String nomeUsuario, String senha, String nomeExibicao){
-        this.nomeUsuario = nomeUsuario;
-        this.senha = senha;
-        this.nomeExibicao = nomeExibicao;
-    }
-
     public Long getId() {
         return id;
     }
@@ -65,4 +59,7 @@ public class Usuario {
     public void setNomeExibicao(String nomeExibicao) {
         this.nomeExibicao = nomeExibicao;
     }
+
+
+    
 }

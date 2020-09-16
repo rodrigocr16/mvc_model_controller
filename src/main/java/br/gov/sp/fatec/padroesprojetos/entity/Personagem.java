@@ -23,9 +23,8 @@ public class Personagem {
     private Long id;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "USU_ID")
-    @Column(name = "PER_PROPRIETARIO")
-    private Long proprietario;
+    @JoinColumn(name = "PER_PROPRIETARIO")
+    private Usuario proprietario;
 
     @Column(name = "PER_NOME")
     private String nome;
@@ -36,12 +35,6 @@ public class Personagem {
     @Column(name = "PER_CLASSE")
     private String classe;
 
-    public Personagem(Long proprietario, String nome, String raca, String classe){
-        this.proprietario = proprietario;
-        this.nome = nome;
-        this.raca = raca;
-        this.classe = classe;
-    }
 
     public Long getId() {
         return id;
@@ -50,10 +43,10 @@ public class Personagem {
         this.id = id;
     }
 
-    public Long getProprietario() {
+    public Usuario getProprietario() {
         return proprietario;
     }
-    public void setProprietario(Long proprietario) {
+    public void setProprietario(Usuario proprietario) {
         this.proprietario = proprietario;
     }
 

@@ -9,14 +9,11 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @Table(name = "LUT_LUTADOR")
 @PrimaryKeyJoinColumn(name = "LUT_ID")
 public class Lutador extends Personagem {
-    public Lutador(Long proprietario, String nome, String raca, String classe) {
-        super(proprietario, nome, raca, classe);        
-    }
 
     @Column(name = "LUT_DADOS_SUPERIORIDADE")
     private Integer dadosSuperioridade;
 
-
+    
     public Integer getdadosSuperioridade() {
         return dadosSuperioridade;
     }

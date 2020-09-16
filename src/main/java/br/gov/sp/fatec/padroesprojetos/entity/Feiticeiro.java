@@ -9,9 +9,6 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @Table(name = "FEI_FEITICEIRO")
 @PrimaryKeyJoinColumn(name = "FEI_ID")
 public class Feiticeiro extends Personagem {
-    public Feiticeiro(Long proprietario, String nome, String raca, String classe) {
-        super(proprietario, nome, raca, classe);        
-    }
 
     @Column(name = "FEI_MAGIAS_CONHECIDAS")
     private Integer magiasConhecidas;

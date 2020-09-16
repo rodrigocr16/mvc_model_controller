@@ -28,7 +28,7 @@ public class Grupo {
     private Usuario mestre;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "INT_INTEGRANTES",
+    @JoinTable(name = "INT_INTEGRANTE",
         joinColumns = { @JoinColumn(name = "GRU_ID")},
         inverseJoinColumns = { @JoinColumn(name = "PER_ID")}
     )
