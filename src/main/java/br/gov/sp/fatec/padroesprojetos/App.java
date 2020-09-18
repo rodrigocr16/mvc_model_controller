@@ -1,5 +1,6 @@
 package br.gov.sp.fatec.padroesprojetos;
 
+import br.gov.sp.fatec.padroesprojetos.dao.LutadorDaoJpa;
 import br.gov.sp.fatec.padroesprojetos.dao.UsuarioDaoJpa;
 import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
 
@@ -17,21 +18,29 @@ public class App
         EntityManager manager = factory.createEntityManager();
         
         // CREATE
-        UsuarioDaoJpa usuarioDaoJpa = new UsuarioDaoJpa(manager);
-        usuarioDaoJpa.cadastrarUsuario("usuario01", "senha", "jhon doe");
-        usuarioDaoJpa.cadastrarUsuario("usuario02", "senha", "jane doe");
-        usuarioDaoJpa.cadastrarUsuario("usuario03", "senha", "jack doe");
+        UsuarioDaoJpa usuarioBanco = new UsuarioDaoJpa(manager);
+        usuarioBanco.cadastrarUsuario("usuario01", "senha", "jhon doe");
+        usuarioBanco.cadastrarUsuario("usuario02", "senha", "jane doe");
+        usuarioBanco.cadastrarUsuario("usuario03", "senha", "jack doe");
 
         // READ
-        System.out.println(usuarioDaoJpa.buscarUsuario("usuario01").getNomeExibicao());
+        System.out.println(usuarioBanco.buscarUsuario("usuario01").getNomeExibicao());
         
         // UPDATE
         Usuario usuario = new Usuario();
-        usuario = usuarioDaoJpa.buscarUsuario("usuario03");
+        usuario = usuarioBanco.buscarUsuario("usuario03");
         usuario.setSenha("senhaF0rt£");
-        usuarioDaoJpa.commitUsuario(usuario);
+        usuarioBanco.commitUsuario(usuario);
 
         // DELETE
-        usuarioDaoJpa.removerUsuario("usuario02");
+        usuarioBanco.removerUsuario("usuario02");
+
+
+        /* SEGMENTO DEDICADO A PARTE DE PERSONAGEM - LUTADOR */
+
+        // CREATE
+        LutadorDaoJpa lutadorBanco = new LutadorDaoJpa(manager);
+        lutadorBanco.cadastrarLutador("Roshton Cave", "Humano", "Bárbaro", usuarioBanco.buscarUsuario("usuario01"));
+        
     }
 }

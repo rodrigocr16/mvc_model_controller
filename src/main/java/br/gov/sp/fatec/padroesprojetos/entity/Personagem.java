@@ -1,6 +1,5 @@
 package br.gov.sp.fatec.padroesprojetos.entity;
 
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,20 +7,16 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.Inheritance;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.InheritanceType;
+import javax.persistence.AttributeOverride;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "PER_PERSONAGEM")
-public class Personagem { 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PER_ID")
-    private Long id;
-    
+@Inheritance(strategy = InheritanceType.JOINED)
+@AttributeOverride(name = "id", column = @Column(name = "PER_ID"))
+public class Personagem extends GeraId { 
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PER_PROPRIETARIO")
     private Usuario proprietario;
@@ -35,13 +30,6 @@ public class Personagem {
     @Column(name = "PER_CLASSE")
     private String classe;
 
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Usuario getProprietario() {
         return proprietario;
