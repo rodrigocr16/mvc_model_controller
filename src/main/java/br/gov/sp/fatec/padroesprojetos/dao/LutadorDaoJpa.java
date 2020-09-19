@@ -9,11 +9,9 @@ import br.gov.sp.fatec.padroesprojetos.entity.PersistenceManager;
 
 public class LutadorDaoJpa implements LutadorDao {
     private EntityManager em;
-
     public LutadorDaoJpa(){
         this(PersistenceManager.getInstance().getEntityManager());
     }
-
     public LutadorDaoJpa(EntityManager em){
         this.em = em;
     }

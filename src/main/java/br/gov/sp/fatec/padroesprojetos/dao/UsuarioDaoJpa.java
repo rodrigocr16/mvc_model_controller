@@ -8,11 +8,9 @@ import br.gov.sp.fatec.padroesprojetos.entity.PersistenceManager;
 
 public class UsuarioDaoJpa implements UsuarioDao {
     private EntityManager em;
-
     public UsuarioDaoJpa(){
         this(PersistenceManager.getInstance().getEntityManager());
     }
-
     public UsuarioDaoJpa(EntityManager em){
         this.em = em;
     }
