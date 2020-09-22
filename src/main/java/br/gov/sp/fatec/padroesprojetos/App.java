@@ -28,35 +28,37 @@ public class App
         /* SEGMENTO DEDICADO A PARTE DE USUÁRIO */
         // CREATE
         UsuarioDaoJpa usuarioBanco = new UsuarioDaoJpa(manager);
-        usuarioBanco.cadastrarUsuario("jovemnerd", "senha", "Alexandre Menezes");
-        usuarioBanco.cadastrarUsuario("azaghal", "senha", "Deive Pazos");
-        usuarioBanco.cadastrarUsuario("tucano", "senha", "Fernando Russel");
-        usuarioBanco.cadastrarUsuario("jotape", "senha", "Joao Paulo");
-        usuarioBanco.cadastrarUsuario("vinceglotto", "senha", "Eduardo Spohr");
-        usuarioBanco.cadastrarUsuario("caquinho", "senha", "Carlos Voltor");
-        usuarioBanco.cadastrarUsuario("rex2099", "senha", "Tiago Lamarca");
+        usuarioBanco.cadastrarUsuario("rodrigocr16", "caramelo123", "Rodrigosaurus");
+        usuarioBanco.cadastrarUsuario("otaviobj", "bj_means_bowser_jr", "Uruck");
+        usuarioBanco.cadastrarUsuario("malakianw", ":okhand:", "Peita Treta");
+        usuarioBanco.cadastrarUsuario("dartlol", "lloyds2", "Tchurusbango");
+        usuarioBanco.cadastrarUsuario("mstriss", "garai123", "Tchurusbago");
+        usuarioBanco.cadastrarUsuario("felipin", "rainbow6", "AirsoftGuy1");
 
         // READ
-        System.out.println(usuarioBanco.buscarUsuario("jovemnerd").getNomeExibicao());
+        System.out.println(usuarioBanco.buscarUsuario("rodrigocr16").getNomeExibicao());
         
         // UPDATE
         Usuario usuario = new Usuario();
-        usuario = usuarioBanco.buscarUsuario("azaghal");
-        usuario.setSenha("senhaF0rt£");
+        usuario = usuarioBanco.buscarUsuario("mstriss");
+        usuario.setNomeExibicao("A_Simplicio");
         usuarioBanco.commitUsuario(usuario);
 
         // DELETE
-        usuarioBanco.removerUsuario("vinceglotto");
+        usuarioBanco.removerUsuario("felipin");
 
 
         /* SEGMENTO DEDICADO A PARTE DE PERSONAGENS */
         // CREATE
         LutadorDaoJpa lutadorBanco = new LutadorDaoJpa(manager);
         FeiticeiroDaoJpa feiticeiroBanco = new FeiticeiroDaoJpa(manager);
-        feiticeiroBanco.cadastrarFeiticeiro("Feldon", "Elfo", "Druida", usuarioBanco.buscarUsuario("tucano"));
-        feiticeiroBanco.cadastrarFeiticeiro("Nilperto", "Humano", "Bardo", usuarioBanco.buscarUsuario("jotape"));
-        lutadorBanco.cadastrarLutador("Rufus Cave", "Humano", "Bárbaro", usuarioBanco.buscarUsuario("rex2099"));
-        lutadorBanco.cadastrarLutador("Roshton Cave", "Humano", "Bárbaro", usuarioBanco.buscarUsuario("caquinho"));
+
+        feiticeiroBanco.cadastrarFeiticeiro("Uruck", "Elfo", "Clérigo", usuarioBanco.buscarUsuario("otaviobj"));
+        feiticeiroBanco.cadastrarFeiticeiro("Andrew", "Elfo", "Clérigo", usuarioBanco.buscarUsuario("dartlol"));
+        feiticeiroBanco.cadastrarFeiticeiro("Elidor", "Halfling", "Clérigo", usuarioBanco.buscarUsuario("malakianw"));
+        feiticeiroBanco.cadastrarFeiticeiro("Astrid", "Meio-Elfo", "Clérigo", usuarioBanco.buscarUsuario("mstriss"));
+
+        lutadorBanco.cadastrarLutador("Rufus Cave", "Humano", "Bárbaro", usuarioBanco.buscarUsuario("malakianw"));
         
 
         /* SEGMENTO DEDICADO A PARTE DO GRUPO */
@@ -65,16 +67,21 @@ public class App
         GrupoDaoJpa grupoBanco = new GrupoDaoJpa(manager);
 
         grupo.setIntegrantes(new HashSet<Personagem>());
-        grupo.setMestre(usuarioBanco.buscarUsuario("jovemnerd"));
+        grupo.setMestre(usuarioBanco.buscarUsuario("rodrigocr16"));
+        grupo.setNomeGrupo("Duque Cave");
         grupo.getIntegrantes().add(lutadorBanco.buscarLutador("Rufus Cave"));
-        grupo.getIntegrantes().add(lutadorBanco.buscarLutador("Roshton Cave"));
         grupoBanco.commitGrupo(grupo);
 
         grupo = new Grupo();
         grupo.setIntegrantes(new HashSet<Personagem>());
-        grupo.setMestre(usuarioBanco.buscarUsuario("jovemnerd"));
-        grupo.getIntegrantes().add(feiticeiroBanco.buscarFeiticeiro("Feldon"));
-        grupo.getIntegrantes().add(feiticeiroBanco.buscarFeiticeiro("Nilperto"));
+        grupo.setMestre(usuarioBanco.buscarUsuario("rodrigocr16"));
+        grupo.setNomeGrupo("The A-Men");
+        grupo.getIntegrantes().add(feiticeiroBanco.buscarFeiticeiro("Uruck"));
+        grupo.getIntegrantes().add(feiticeiroBanco.buscarFeiticeiro("Elidor"));
+        grupo.getIntegrantes().add(feiticeiroBanco.buscarFeiticeiro("Andrew"));
+        grupo.getIntegrantes().add(feiticeiroBanco.buscarFeiticeiro("Astrid"));
         grupoBanco.commitGrupo(grupo);
+
+        System.out.print("The A-Men id: " + grupoBanco.buscarGrupo(1l, "The A-Men").getId());
     }
 }

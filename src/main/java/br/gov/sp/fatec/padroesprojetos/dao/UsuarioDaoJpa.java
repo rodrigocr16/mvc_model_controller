@@ -1,6 +1,7 @@
 package br.gov.sp.fatec.padroesprojetos.dao;
 
 import javax.persistence.TypedQuery;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
@@ -66,5 +67,5 @@ public class UsuarioDaoJpa implements UsuarioDao {
         em.getTransaction().begin();
         em.remove(usuario);
         em.getTransaction().commit();
-    }    
+    }
 }

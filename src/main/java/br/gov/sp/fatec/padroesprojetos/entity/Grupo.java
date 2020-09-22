@@ -21,6 +21,9 @@ public class Grupo extends GeraId {
     @JoinColumn(name = "GRU_MESTRE")
     private Usuario mestre;
 
+    @Column(name = "GRU_NOME")
+    private String nomeGrupo;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "INT_INTEGRANTE",
         joinColumns = { @JoinColumn(name = "GRU_ID")},
@@ -41,5 +44,12 @@ public class Grupo extends GeraId {
     }
     public void setIntegrantes(Set<Personagem> integrantes) {
         this.integrantes = integrantes;
-    }    
+    }
+
+    public String getNomeGrupo() {
+        return nomeGrupo;
+    }
+    public void setNomeGrupo(String nomeGrupo) {
+        this.nomeGrupo = nomeGrupo;
+    }
 }
