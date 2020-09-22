@@ -1,18 +1,20 @@
 package br.gov.sp.fatec.padroesprojetos;
 
+import java.util.HashSet;
+
+import br.gov.sp.fatec.padroesprojetos.entity.Grupo;
+import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
 import br.gov.sp.fatec.padroesprojetos.dao.GrupoDaoJpa;
 import br.gov.sp.fatec.padroesprojetos.dao.LutadorDaoJpa;
 import br.gov.sp.fatec.padroesprojetos.dao.UsuarioDaoJpa;
-import br.gov.sp.fatec.padroesprojetos.entity.Grupo;
 import br.gov.sp.fatec.padroesprojetos.entity.Personagem;
-import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
+import br.gov.sp.fatec.padroesprojetos.dao.FeiticeiroDaoJpa;
 
 import javax.persistence.EntityManagerFactory;
-
-import java.util.HashSet;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+
+
 
 
 public class App 
@@ -50,24 +52,29 @@ public class App
         /* SEGMENTO DEDICADO A PARTE DE PERSONAGENS */
         // CREATE
         LutadorDaoJpa lutadorBanco = new LutadorDaoJpa(manager);
-        //FeiticeiroDaoJpa feiticeiroBanco = new FeiticeiroDaoJpa(manager);
-        //feiticeiroBanco.cadastrarFeiticeiro("Feldon", "Elfo", "Druida", usuarioBanco.buscarUsuario(""));
-        //feiticeiroBanco.cadastrarFeiticeiro("Nilperto", "Humano", "Bardo", usuarioBanco.buscarUsuario(""));
+        FeiticeiroDaoJpa feiticeiroBanco = new FeiticeiroDaoJpa(manager);
+        feiticeiroBanco.cadastrarFeiticeiro("Feldon", "Elfo", "Druida", usuarioBanco.buscarUsuario("tucano"));
+        feiticeiroBanco.cadastrarFeiticeiro("Nilperto", "Humano", "Bardo", usuarioBanco.buscarUsuario("jotape"));
         lutadorBanco.cadastrarLutador("Rufus Cave", "Humano", "Bárbaro", usuarioBanco.buscarUsuario("rex2099"));
         lutadorBanco.cadastrarLutador("Roshton Cave", "Humano", "Bárbaro", usuarioBanco.buscarUsuario("caquinho"));
-        lutadorBanco.cadastrarLutador("Ruprest Ruprestson", "Doppleganger", "Ladino", usuarioBanco.buscarUsuario("azaghal"));
         
 
         /* SEGMENTO DEDICADO A PARTE DO GRUPO */
         // CREATE
         Grupo grupo = new Grupo();
+        GrupoDaoJpa grupoBanco = new GrupoDaoJpa(manager);
+
         grupo.setIntegrantes(new HashSet<Personagem>());
         grupo.setMestre(usuarioBanco.buscarUsuario("jovemnerd"));
         grupo.getIntegrantes().add(lutadorBanco.buscarLutador("Rufus Cave"));
         grupo.getIntegrantes().add(lutadorBanco.buscarLutador("Roshton Cave"));
-        grupo.getIntegrantes().add(lutadorBanco.buscarLutador("Ruprest Ruprestson"));
+        grupoBanco.commitGrupo(grupo);
 
-        GrupoDaoJpa grupoBanco = new GrupoDaoJpa(manager);
+        grupo = new Grupo();
+        grupo.setIntegrantes(new HashSet<Personagem>());
+        grupo.setMestre(usuarioBanco.buscarUsuario("jovemnerd"));
+        grupo.getIntegrantes().add(feiticeiroBanco.buscarFeiticeiro("Feldon"));
+        grupo.getIntegrantes().add(feiticeiroBanco.buscarFeiticeiro("Nilperto"));
         grupoBanco.commitGrupo(grupo);
     }
 }

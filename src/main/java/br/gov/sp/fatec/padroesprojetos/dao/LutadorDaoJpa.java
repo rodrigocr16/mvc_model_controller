@@ -46,7 +46,8 @@ public class LutadorDaoJpa implements LutadorDao {
         catch(PersistenceException pe){
             pe.printStackTrace();
             em.getTransaction().rollback();
-            throw new RuntimeException("Ocorreu um erro ao salvar o personagem: ", pe);
+            throw new RuntimeException("Ocorreu um erro ao salvar o personagem: '"
+                + lutador.getNome() + "': ", pe);
         }
     }
     
