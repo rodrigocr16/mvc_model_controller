@@ -3,5 +3,6 @@
 Professor Giuliano Araujo Bertoti
 
 ### Alunos<br>
+Lucas José Povinske<br>
 Otavio Augusto Raposo Barreto<br>
 Rodrigo César Reis
