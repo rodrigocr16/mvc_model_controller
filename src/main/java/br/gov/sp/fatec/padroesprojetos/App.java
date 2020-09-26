@@ -2,8 +2,10 @@ package br.gov.sp.fatec.padroesprojetos;
 
 import java.util.HashSet;
 
-import br.gov.sp.fatec.padroesprojetos.entity.Arma;
-import br.gov.sp.fatec.padroesprojetos.entity.Equipamento;
+import br.gov.sp.fatec.padroesprojetos.entity.Admin;
+
+//import br.gov.sp.fatec.padroesprojetos.entity.Arma;
+//import br.gov.sp.fatec.padroesprojetos.entity.Equipamento;
 
 import br.gov.sp.fatec.padroesprojetos.entity.Grupo;
 import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
@@ -87,44 +89,19 @@ public class App
 
         System.out.print("The A-Men id: " + grupoBanco.buscarGrupo(1l, "The A-Men").getId());
         
+        Admin admin = new Admin();
+        admin.setNomeUsuario("donoDaBola");
+        admin.setSenha("S3nha_F0r7£");
+        admin.setNomeExibicao("O Poderoso Admin");
+        admin.setClassificacao(5);
 
-        Arma machado = new Arma();
-            machado.setNome("Machadinha");
-            machado.setPeso(2.8f);
-            machado.setPreco(8.5f);
-            machado.setDescricao("Machado de uma mão");
-            machado.setDano(5);
-            machado.setAtributoProficiencia("FOR");
-
-        Arma florete = new Arma();
-            florete.setNome("Florete");
-            florete.setPeso(1.5f);
-            florete.setPreco(10f);
-            florete.setDescricao("Longa espada delgada");
-            florete.setDano(4);
-            florete.setAtributoProficiencia("DES");
-
-        Equipamento brunea = new Equipamento();
-            brunea.setNome("Brunea");
-            brunea.setPeso(10f);
-            brunea.setPreco(25f);
-            brunea.setDescricao("Armadura de escamas");
-            brunea.setClasseDeArmadura(12);
-            brunea.setTipoArmadura("Média");
-
-        Equipamento placas = new Equipamento();
-            placas.setNome("Armadura de Placas");
-            placas.setPeso(15f);
-            placas.setPreco(20f);
-            placas.setDescricao("Armadura com placas verticais rebitadas");
-            placas.setClasseDeArmadura(13);
-            placas.setTipoArmadura("Pesada");
-
-        /*manager.getTransaction().begin();
-            manager.persist(machado);
-            manager.persist(florete);
-            manager.persist(brunea);
-            manager.persist(placas);
-        manager.getTransaction().commit();*/
+        manager.getTransaction().begin();
+        if(usuario.getId() == null){
+            manager.persist(admin);
+        } else {
+            manager.merge(admin);
+        }
+        manager.getTransaction().commit();
+        
     }
 }
