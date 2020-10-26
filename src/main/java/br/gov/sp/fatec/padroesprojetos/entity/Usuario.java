@@ -2,6 +2,9 @@ package br.gov.sp.fatec.padroesprojetos.entity;
 
 import java.util.Set;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -20,6 +23,7 @@ import javax.persistence.AttributeOverride;
 @AttributeOverride(name = "id", column = @Column(name = "USU_ID"))
 public class Usuario extends GeraId { 
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "proprietario")
     private Set<Personagem> personagens;
     

@@ -14,4 +14,13 @@
      <url-pattern>/</url-pattern>
    </servlet-mapping>
 
+   <servlet>
+     <servlet-name>usuarioServlet</servlet-name>
+     <servlet-class>br.gov.sp.fatec.padroesprojetos.controller.UsuarioController</servlet-class>
+   </servlet>
+   <servlet-mapping> <!-- em qual endereço ele responde -->
+     <servlet-name>usuarioServlet</servlet-name>
+     <url-pattern>/usuario</url-pattern>
+   </servlet-mapping>   
+
 </web-app>
