@@ -1,1 +1,5 @@
+ports:
+  - port: 8081
+tasks:
+  - init: mysql < up.sql
 image: gitpod/workspace-mysql
