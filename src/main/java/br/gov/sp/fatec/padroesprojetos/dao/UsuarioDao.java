@@ -12,4 +12,6 @@ public interface UsuarioDao {
     public Usuario commitUsuario(Usuario usuario);
     
     public void removerUsuario(String nomeUsuario);
+
+    public void updateUsuario(String nomeUsuario, Usuario up_usuario);
 }

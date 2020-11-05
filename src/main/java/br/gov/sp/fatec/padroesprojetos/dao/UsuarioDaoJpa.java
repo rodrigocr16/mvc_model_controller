@@ -68,4 +68,15 @@ public class UsuarioDaoJpa implements UsuarioDao {
         em.remove(usuario);
         em.getTransaction().commit();
     }
+
+    @Override
+    public void updateUsuario(String nomeUsuario, Usuario up_usuario) {
+        Usuario usuario = buscarUsuario(nomeUsuario);
+        if(usuario == null){
+            throw new RuntimeException("O usuário solicitado não foi encontrado.");
+        }
+        em.getTransaction().begin();
+        em.merge(usuario);
+        em.getTransaction().commit();
+    }
 }
