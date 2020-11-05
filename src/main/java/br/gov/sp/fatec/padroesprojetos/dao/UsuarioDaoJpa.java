@@ -72,11 +72,13 @@ public class UsuarioDaoJpa implements UsuarioDao {
     @Override
     public void updateUsuario(String nomeUsuario, Usuario up_usuario) {
         Usuario usuario = buscarUsuario(nomeUsuario);
-        if(usuario == null){
+        if(usuario == null || !usuario.getNomeUsuario().equals(up_usuario.getNomeUsuario())){
             throw new RuntimeException("O usuário solicitado não foi encontrado.");
         }
+
         em.getTransaction().begin();
-        em.merge(usuario);
+        usuario.setNomeExibicao(up_usuario.getNomeExibicao());
+        usuario.setSenha(up_usuario.getSenha());
         em.getTransaction().commit();
     }
 }

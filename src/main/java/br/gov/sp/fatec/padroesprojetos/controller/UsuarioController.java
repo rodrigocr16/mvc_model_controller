@@ -74,24 +74,18 @@ public class UsuarioController extends HttpServlet {
 
         // Recuperamos o corpo da requisição e transformamos o JSON em objeto
         ObjectMapper mapper = new ObjectMapper();
-        Usuario usuario = mapper.readValue(req.getReader(), Usuario.class);
+        Usuario up_usuario = mapper.readValue(req.getReader(), Usuario.class);
 
         // Salvamos no Banco de Dados
         UsuarioDao usuarioDao = new UsuarioDaoJpa();
-        usuarioDao.buscarUsuario(nomeUsuario);
+        usuarioDao.updateUsuario(nomeUsuario, up_usuario);
 
-        // Retornamos o registro gerado
-        String usuarioJson = mapper.writeValueAsString(usuario);
+        // Formatamos a resposta
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-
-        // O código 201 requer que retornemos um header de Location
-        resp.setStatus(201);
-        String location = req.getServerName() + ":" + req.getServerPort() + req.getContextPath() + "/usuario?nomeUsuario="
-                + usuario.getNomeUsuario();
-        resp.setHeader("Location", location);
+        resp.setStatus(200);
         PrintWriter out = resp.getWriter();
-        out.print(usuarioJson);
+        out.print("");
         out.flush();
     }
 
