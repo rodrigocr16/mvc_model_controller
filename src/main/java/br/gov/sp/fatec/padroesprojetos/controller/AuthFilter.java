@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 import java.io.UnsupportedEncodingException;
 
+import javax.persistence.DiscriminatorValue;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -15,11 +16,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.gov.sp.fatec.padroesprojetos.dao.UsuarioDao;
+import br.gov.sp.fatec.padroesprojetos.dao.UsuarioDaoJpa;
+import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
+
 public class AuthFilter implements Filter {
 
     private ServletContext context;
-    private String username = "admin";
-    private String password = "password_dificil";
+    //private String username = "admin";
+    //private String password = "password_dificil";
     private String realm = "PROTECTED";    
 
     @Override
@@ -53,9 +58,26 @@ public class AuthFilter implements Filter {
                             String _username = credentials.substring(0, p).trim();
                             String _password = credentials.substring(p + 1).trim();
 
+                            /* SEGMENTO SOB CONCESSÃO DA CCR NOVA DUTRA */
+                            UsuarioDao usuarioDao = new UsuarioDaoJpa();
+                            Usuario usuario = new Usuario();
+                            
+                            usuario = usuarioDao.buscarUsuario(_username);
+                            
+                            /* FIM DO SEGMENTO SOB CONCESSÃO DA CCR NOVA DUTRA*/
+
                             // Se nao bate com configuracao retorna erro
-                            if (!username.equals(_username) || !password.equals(_password)) {
+                            String clearance = usuario.getClass().getAnnotation(DiscriminatorValue.class).value();
+                            String metodo = request.getMethod();
+                            if (!usuario.getSenha().equals(_password)) {
                                 unauthorized(response, "Credenciais invalidas");
+                                return;
+                            }
+                            if (metodo == "DELETE" || metodo == "POST") {
+                                if (clearance != "Administrador"){
+                                    unauthorized(response, "Acesso restrito");
+                                    return;
+                                }
                             }
 
                             // Prossegue com a requisicao
@@ -83,8 +105,8 @@ public class AuthFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {
         this.context = config.getServletContext();
         this.context.log("Filtro inicializado!");
-        this.username = config.getInitParameter("username");
-        this.password = config.getInitParameter("password");
+        //this.username = config.getInitParameter("username");
+        //this.password = config.getInitParameter("password");
         String paramRealm = config.getInitParameter("realm");
         if (paramRealm != null && paramRealm.length() > 0) {
             this.realm = paramRealm;
