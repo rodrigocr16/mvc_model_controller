@@ -13,5 +13,5 @@ public interface UsuarioDao {
     
     public void removerUsuario(String nomeUsuario);
 
-    public String getClearance(String nomeUsuario);
+    public String getClearance(String nomeUsuario); 
 }
