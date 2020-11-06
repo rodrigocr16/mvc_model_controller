@@ -16,7 +16,6 @@ import br.gov.sp.fatec.padroesprojetos.entity.Personagem;
 import br.gov.sp.fatec.padroesprojetos.dao.FeiticeiroDaoJpa;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
@@ -103,9 +102,6 @@ public class App
             manager.merge(admin);
         }
         manager.getTransaction().commit();
-
-        String hello = admin.getClass().getAnnotation(DiscriminatorValue.class).value();
-        System.out.print("A consulta retornou: '" + hello + "'!");
-        
+       
     }
 }

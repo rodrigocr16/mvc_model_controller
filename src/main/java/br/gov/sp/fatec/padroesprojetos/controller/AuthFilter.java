@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 import java.io.UnsupportedEncodingException;
 
-import javax.persistence.DiscriminatorValue;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -25,7 +24,7 @@ public class AuthFilter implements Filter {
     private ServletContext context;
     //private String username = "admin";
     //private String password = "password_dificil";
-    private String realm = "PROTECTED";    
+    private String realm = "PROTECTED";
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -34,6 +33,7 @@ public class AuthFilter implements Filter {
         this.context.log("Filtro de autenticacao acessado!");
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
+        String metodo = request.getMethod();
 
         // Verifica se tem o header Authorization
         String authHeader = request.getHeader("Authorization");
@@ -58,23 +58,18 @@ public class AuthFilter implements Filter {
                             String _username = credentials.substring(0, p).trim();
                             String _password = credentials.substring(p + 1).trim();
 
-                            /* SEGMENTO SOB CONCESSÃO DA CCR NOVA DUTRA */
                             UsuarioDao usuarioDao = new UsuarioDaoJpa();
-                            Usuario usuario = new Usuario();
-                            
-                            usuario = usuarioDao.buscarUsuario(_username);
-                            
-                            /* FIM DO SEGMENTO SOB CONCESSÃO DA CCR NOVA DUTRA*/
+                            Usuario usuario = usuarioDao.buscarUsuario(_username);
+                            String clearance = usuarioDao.getClearance(_username);                            
 
                             // Se nao bate com configuracao retorna erro
-                            String clearance = usuario.getClass().getAnnotation(DiscriminatorValue.class).value();
-                            String metodo = request.getMethod();
-                            if (!usuario.getSenha().equals(_password)) {
+                            if(!usuario.getSenha().equals(_password)) {
                                 unauthorized(response, "Credenciais invalidas");
                                 return;
                             }
-                            if (metodo == "DELETE" || metodo == "POST") {
-                                if (clearance != "Administrador"){
+
+                            if(metodo == "DELETE" || metodo == "PUT"){
+                                if(clearance == "Usuario"){
                                     unauthorized(response, "Acesso restrito");
                                     return;
                                 }

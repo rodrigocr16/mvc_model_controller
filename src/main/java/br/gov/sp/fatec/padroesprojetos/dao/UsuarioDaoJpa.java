@@ -1,7 +1,7 @@
 package br.gov.sp.fatec.padroesprojetos.dao;
 
 import javax.persistence.TypedQuery;
-
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
@@ -67,5 +67,17 @@ public class UsuarioDaoJpa implements UsuarioDao {
         em.getTransaction().begin();
         em.remove(usuario);
         em.getTransaction().commit();
+    }
+
+    @Override
+    public String getClearance(String nomeUsuario) {
+        Usuario usuario = buscarUsuario(nomeUsuario);
+        String clearance = new String();
+        try{
+            clearance = usuario.getClass().getAnnotation(DiscriminatorValue.class).value();
+        } catch(NullPointerException npe){
+            clearance = "Usuario";
+        }
+        return clearance;
     }
 }

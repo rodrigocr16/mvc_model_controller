@@ -2,6 +2,7 @@ package br.gov.sp.fatec.padroesprojetos.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class UsuarioController extends HttpServlet {
         // Usamos o Jackson para transformar o objeto em um JSON (String)
         ObjectMapper mapper = new ObjectMapper();
         String usuarioJson = mapper.writeValueAsString(usuario);
-        
+
         // Formatamos a resposta
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");

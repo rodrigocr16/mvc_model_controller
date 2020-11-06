@@ -12,4 +12,6 @@ public interface UsuarioDao {
     public Usuario commitUsuario(Usuario usuario);
     
     public void removerUsuario(String nomeUsuario);
+
+    public String getClearance(String nomeUsuario);
 }
