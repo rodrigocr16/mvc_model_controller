@@ -64,4 +64,23 @@ public class UsuarioController extends HttpServlet {
         out.flush();
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
+        // Recupera o parâmetro id (de usuario?nomeUsuario=<valor>)
+        //String nomeUsuario = String.valueOf(req.getParameter("nomeUsuario"));
+        String nomeUsuario = req.getParameter("nomeUsuario");
+
+        // Busca usuario com o nome de usuario
+        UsuarioDao usuarioDao = new UsuarioDaoJpa();
+        usuarioDao.removerUsuario(nomeUsuario);
+        
+        // Formatamos a resposta
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(200);
+        PrintWriter out = resp.getWriter();
+        out.print("");
+        out.flush();
+    }
 }
