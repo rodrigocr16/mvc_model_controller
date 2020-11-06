@@ -16,7 +16,6 @@ public class UsuarioController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
         // Recupera o parâmetro id (de usuario?id=<valor>)
         //String nomeUsuario = String.valueOf(req.getParameter("nomeUsuario"));
         String nomeUsuario = req.getParameter("nomeUsuario");
@@ -40,7 +39,6 @@ public class UsuarioController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
         // Recuperamos o corpo da requisição e transformamos o JSON em objeto
         ObjectMapper mapper = new ObjectMapper();
         Usuario usuario = mapper.readValue(req.getReader(), Usuario.class);
@@ -66,7 +64,6 @@ public class UsuarioController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
         // Recupera o parâmetro id (de usuario?nomeUsuario=<valor>)
         //String nomeUsuario = String.valueOf(req.getParameter("nomeUsuario"));
         String nomeUsuario = req.getParameter("nomeUsuario");
@@ -75,6 +72,32 @@ public class UsuarioController extends HttpServlet {
         UsuarioDao usuarioDao = new UsuarioDaoJpa();
         usuarioDao.removerUsuario(nomeUsuario);
         
+        // Formatamos a resposta
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(200);
+        PrintWriter out = resp.getWriter();
+        out.print("");
+        out.flush();
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Recuperamos o corpo da requisição e transformamos o JSON em objeto
+        ObjectMapper mapper = new ObjectMapper();
+        Usuario usuario = mapper.readValue(req.getReader(), Usuario.class);
+
+        // Salvamos no Banco de Dados
+        UsuarioDao usuarioDao = new UsuarioDaoJpa();
+
+        String nomeUsuario = req.getParameter("nomeUsuario");
+        if(usuarioDao.buscarUsuario(nomeUsuario) != null){
+            usuario.setId(usuarioDao.buscarUsuario(nomeUsuario).getId());
+            usuarioDao.commitUsuario(usuario);
+        } else {
+            throw new RuntimeException("O usuário solicitado não foi encontrado.");
+        }
+
         // Formatamos a resposta
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
