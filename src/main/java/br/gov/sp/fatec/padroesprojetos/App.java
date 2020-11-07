@@ -3,10 +3,6 @@ package br.gov.sp.fatec.padroesprojetos;
 import java.util.HashSet;
 
 import br.gov.sp.fatec.padroesprojetos.entity.Admin;
-
-//import br.gov.sp.fatec.padroesprojetos.entity.Arma;
-//import br.gov.sp.fatec.padroesprojetos.entity.Equipamento;
-
 import br.gov.sp.fatec.padroesprojetos.entity.Grupo;
 import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
 import br.gov.sp.fatec.padroesprojetos.dao.GrupoDaoJpa;
@@ -18,9 +14,6 @@ import br.gov.sp.fatec.padroesprojetos.dao.FeiticeiroDaoJpa;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
-
-
-
 
 public class App 
 {

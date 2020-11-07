@@ -71,7 +71,12 @@ public class UsuarioController extends HttpServlet {
 
         // Busca usuario com o nome de usuario
         UsuarioDao usuarioDao = new UsuarioDaoJpa();
-        usuarioDao.removerUsuario(nomeUsuario);
+        try{
+            usuarioDao.removerUsuario(nomeUsuario);
+        } catch(Exception e){
+            resp.sendError(404, "Usuario nao encontrado");
+            return;
+        }
         
         // Formatamos a resposta
         resp.setContentType("application/json");
@@ -92,11 +97,21 @@ public class UsuarioController extends HttpServlet {
         UsuarioDao usuarioDao = new UsuarioDaoJpa();
 
         String nomeUsuario = req.getParameter("nomeUsuario");
+        /*
         if(usuarioDao.buscarUsuario(nomeUsuario) != null){
             usuario.setId(usuarioDao.buscarUsuario(nomeUsuario).getId());
             usuarioDao.commitUsuario(usuario);
         } else {
             throw new RuntimeException("O usuário solicitado não foi encontrado.");
+        }
+        */
+
+        try{
+            usuario.setId(usuarioDao.buscarUsuario(nomeUsuario).getId());
+            usuarioDao.commitUsuario(usuario);
+        } catch(Exception e){
+            resp.sendError(404, "Usuario nao encontrado");
+            return;
         }
 
         // Formatamos a resposta

@@ -1,10 +1,10 @@
 package br.gov.sp.fatec.padroesprojetos.dao;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
+import br.gov.sp.fatec.padroesprojetos.entity.Admin;
 import br.gov.sp.fatec.padroesprojetos.entity.PersistenceManager;
 
 public class UsuarioDaoJpa implements UsuarioDao {
@@ -73,11 +73,13 @@ public class UsuarioDaoJpa implements UsuarioDao {
     public String getClearance(String nomeUsuario) {
         Usuario usuario = buscarUsuario(nomeUsuario);
         String clearance = new String();
-        try{
-            clearance = usuario.getClass().getAnnotation(DiscriminatorValue.class).value();
-        } catch(NullPointerException npe){
+
+        if(usuario instanceof Admin){
+            clearance = "Administrador";
+        } else {
             clearance = "Usuario";
         }
+        
         return clearance;
     }
 }
