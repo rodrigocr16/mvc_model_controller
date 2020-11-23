@@ -23,13 +23,13 @@ public class App
             .createEntityManagerFactory("padroesprojetos");
         EntityManager manager = factory.createEntityManager();
         
-        /* SEGMENTO DEDICADO A PARTE DE USUÁRIO */
+        // SEGMENTO DEDICADO A PARTE DE USUÁRIO
         // CREATE
         UsuarioDaoJpa usuarioBanco = new UsuarioDaoJpa(manager);
         usuarioBanco.cadastrarUsuario("usuario1", "senha", "Ana");
         usuarioBanco.cadastrarUsuario("usuario2", "senha", "Bernardo");
         usuarioBanco.cadastrarUsuario("usuario3", "senha", "Claudia");
-        usuarioBanco.cadastrarUsuario("usuario4", "senha", "Danilo");
+        usuarioBanco.cadastrarUsuario("usuario4", "senha", "Daniel");
         usuarioBanco.cadastrarUsuario("usuario5", "senha", "Eliana");
 
         // READ
@@ -38,14 +38,14 @@ public class App
         // UPDATE
         Usuario usuario = new Usuario();
         usuario = usuarioBanco.buscarUsuario("usuario4");
-        usuario.setNomeExibicao("Danilater");
+        usuario.setNomeExibicao("Danilo");
         usuarioBanco.commitUsuario(usuario);
 
         // DELETE
         usuarioBanco.removerUsuario("usuario5");
 
-
-        /* SEGMENTO DEDICADO A PARTE DE PERSONAGENS */
+        /*
+        // SEGMENTO DEDICADO A PARTE DE PERSONAGENS
         // CREATE
         LutadorDaoJpa lutadorBanco = new LutadorDaoJpa(manager);
         FeiticeiroDaoJpa feiticeiroBanco = new FeiticeiroDaoJpa(manager);
@@ -57,7 +57,7 @@ public class App
         lutadorBanco.cadastrarLutador("Rufus Cave", "Humano", "Bárbaro", usuarioBanco.buscarUsuario("usuario3"));
         
 
-        /* SEGMENTO DEDICADO A PARTE DO GRUPO */
+        // SEGMENTO DEDICADO A PARTE DO GRUPO
         // CREATE
         Grupo grupo = new Grupo();
         GrupoDaoJpa grupoBanco = new GrupoDaoJpa(manager);
@@ -79,6 +79,10 @@ public class App
 
         System.out.print("The A-Men id: " + grupoBanco.buscarGrupo(1l, "The A-Men").getId());
         
+        */
+
+        // SEGMENTO DEDICADO À INCLUSÃO DE ADMINISTRADORES
+
         Admin admin = new Admin();
         admin.setNomeUsuario("admin1");
         admin.setSenha("adm1n");
@@ -106,6 +110,5 @@ public class App
             manager.merge(admin);
         }
         manager.getTransaction().commit();
-       
     }
 }
