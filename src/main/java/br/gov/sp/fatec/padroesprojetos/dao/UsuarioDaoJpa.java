@@ -1,10 +1,11 @@
 package br.gov.sp.fatec.padroesprojetos.dao;
 
+import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
-import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
 import br.gov.sp.fatec.padroesprojetos.entity.Admin;
+import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
 import br.gov.sp.fatec.padroesprojetos.entity.PersistenceManager;
 
 public class UsuarioDaoJpa implements UsuarioDao {
@@ -57,7 +58,6 @@ public class UsuarioDaoJpa implements UsuarioDao {
         }   return usuario;
     }
 
-
     @Override
     public void removerUsuario(String nomeUsuario) {
         Usuario usuario = buscarUsuario(nomeUsuario);
@@ -79,7 +79,13 @@ public class UsuarioDaoJpa implements UsuarioDao {
         } else {
             clearance = "Usuario";
         }
-        
         return clearance;
+    }
+
+    @Override
+    public List<Usuario> todosUsuario() {
+        String jpql = "select u from Usuario u";
+        TypedQuery<Usuario> query = em.createQuery(jpql, Usuario.class);
+        return query.getResultList();
     }
 }

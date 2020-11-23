@@ -1,5 +1,6 @@
 package br.gov.sp.fatec.padroesprojetos.dao;
 
+import java.util.List;
 import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
 
 public interface UsuarioDao {
@@ -14,4 +15,6 @@ public interface UsuarioDao {
     public void removerUsuario(String nomeUsuario);
 
     public String getClearance(String nomeUsuario);
+
+    public List<Usuario> todosUsuario();
 }

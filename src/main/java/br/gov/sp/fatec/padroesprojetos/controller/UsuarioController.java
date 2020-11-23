@@ -1,11 +1,11 @@
 package br.gov.sp.fatec.padroesprojetos.controller;
 
+import java.util.List;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,32 +18,48 @@ public class UsuarioController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Recupera o parâmetro id (de usuario?id=<valor>)
-        //String nomeUsuario = String.valueOf(req.getParameter("nomeUsuario"));
         String nomeUsuario = req.getParameter("nomeUsuario");
-        try{
-            // Busca usuario com o nome de usuario
-            UsuarioDao usuarioDao = new UsuarioDaoJpa();
-            Usuario usuario = usuarioDao.buscarUsuario(nomeUsuario);
-            
-            // Usamos o Jackson para transformar o objeto em um JSON (String)
-            ObjectMapper mapper = new ObjectMapper();
-            String usuarioJson = mapper.writeValueAsString(usuario);
+        if (nomeUsuario.equals("")) {
+            try{
+                UsuarioDao usuarioDao = new UsuarioDaoJpa();
+                List<Usuario> usuario = usuarioDao.todosUsuario();
+                ObjectMapper mapper = new ObjectMapper();
+                String usuarioJson = mapper.writeValueAsString(usuario);
 
-            // Formatamos a resposta
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.setStatus(200);
-            PrintWriter out = resp.getWriter();
-            out.print(usuarioJson);
-            out.flush();
-        } catch(NullPointerException npe) {
-            resp.sendError(400, "Valor buscado inválido");
-            return;
-        } catch(NoResultException nre) {
-            resp.sendError(404, "Usuário não cadastrado");
-            return;
-        }
+                resp.setContentType("application/json");
+                resp.setCharacterEncoding("UTF-8");
+                resp.setStatus(200);
+                PrintWriter out = resp.getWriter();
+                out.print(usuarioJson);
+                out.flush();
+            } catch (NullPointerException npe) {
+                resp.sendError(400, "Valor buscado inválido");
+                return;
+            } catch (NoResultException nre) {
+                resp.sendError(404, "Usuário não cadastrado");
+                return;
+            }
+        } else{
+            try {
+                UsuarioDao usuarioDao = new UsuarioDaoJpa();
+                Usuario usuario = usuarioDao.buscarUsuario(nomeUsuario);
+                ObjectMapper mapper = new ObjectMapper();
+                String usuarioJson = mapper.writeValueAsString(usuario);
+
+                resp.setContentType("application/json");
+                resp.setCharacterEncoding("UTF-8");
+                resp.setStatus(200);
+                PrintWriter out = resp.getWriter();
+                out.print(usuarioJson);
+                out.flush();
+            } catch (NullPointerException npe) {
+                resp.sendError(400, "Valor buscado inválido");
+                return;
+            } catch (NoResultException nre) {
+                resp.sendError(404, "Usuário não cadastrado");
+                return;
+            }
+        }               
     }
 
     @Override
