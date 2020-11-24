@@ -1,7 +1,6 @@
 package br.gov.sp.fatec.padroesprojetos;
 
 import java.util.HashSet;
-
 import br.gov.sp.fatec.padroesprojetos.entity.Admin;
 import br.gov.sp.fatec.padroesprojetos.entity.Grupo;
 import br.gov.sp.fatec.padroesprojetos.entity.Usuario;
@@ -44,7 +43,6 @@ public class App
         // DELETE
         usuarioBanco.removerUsuario("usuario5");
 
-        /*
         // SEGMENTO DEDICADO A PARTE DE PERSONAGENS
         // CREATE
         LutadorDaoJpa lutadorBanco = new LutadorDaoJpa(manager);
@@ -55,7 +53,6 @@ public class App
         feiticeiroBanco.cadastrarFeiticeiro("Astrid", "Meio-Elfo", "Clérigo", usuarioBanco.buscarUsuario("usuario4"));
 
         lutadorBanco.cadastrarLutador("Rufus Cave", "Humano", "Bárbaro", usuarioBanco.buscarUsuario("usuario3"));
-        
 
         // SEGMENTO DEDICADO A PARTE DO GRUPO
         // CREATE
@@ -79,10 +76,7 @@ public class App
 
         System.out.print("The A-Men id: " + grupoBanco.buscarGrupo(1l, "The A-Men").getId());
         
-        */
-
         // SEGMENTO DEDICADO À INCLUSÃO DE ADMINISTRADORES
-
         Admin admin = new Admin();
         admin.setNomeUsuario("admin1");
         admin.setSenha("adm1n");
