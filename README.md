@@ -177,3 +177,141 @@ public void removerUsuario(String nomeUsuario) {
     em.getTransaction().commit();
 }
 ```
+___
+## 3. CONTROLLER
+Na camada CONTROLLER nós trabalhamos com o UsuarioController.java que faz a comunicação entre a VIEW e o MODEL para esta entidade, e com alguns exemplos de filtros:<br>
+
+### 3.i) Usuario
+O UsuarioController.java trabalha no padrão HTTP, recebendo uma requisição e devolvendo uma resposta. Resumidamente, serve de intermediário entre o nosso back-end em Java e o nosso front-end em Vue, trocando informações e devolvendo um status dependendo se a comunicação foi ou não efetuada com sucesso;<br>
+A seguir mostraremos os procedimentos Get, Post, Put e Delete, que respectivamente permitem leitura, criação, atualização e remoção de registros.
+
+#### GET
+Buscando pelo parâmetro ``nomeUsuario`` na request, criamos um novo UsuarioDao que fará a busca no banco;<br>
+Se o parâmetro buscado não for encontrado, sabemos que se trata de uma busca que deseja listar todos os usuários cadastrados, então cria-se uma List para receber essas informações e chamamos o método ``todosUsuario()``;<br>
+Caso um nomeUsuario seja informado, o método ``buscarUsuario(nomeUsuario)`` utilizará este parâmetro para retornar o registro desejado;<br>
+Independentemente se a busca desejava retornar um ou vários usuários, estes serão dados no formato .Json que será utilizado pela VIEW:
+```
+@Override
+protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    String nomeUsuario = req.getParameter("nomeUsuario");
+    if (nomeUsuario.equals("")) {
+        try{
+            UsuarioDao usuarioDao = new UsuarioDaoJpa();
+            List<Usuario> usuario = usuarioDao.todosUsuario();
+            ObjectMapper mapper = new ObjectMapper();
+            String usuarioJson = mapper.writeValueAsString(usuario);
+
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.setStatus(200);
+            PrintWriter out = resp.getWriter();
+            out.print(usuarioJson);
+            out.flush();
+        } catch (NullPointerException npe) {
+            resp.sendError(400, "Valor buscado inválido");
+            return;
+        } catch (NoResultException nre) {
+            resp.sendError(404, "Usuário não cadastrado");
+            return;
+        }
+    } else{
+        try {
+            UsuarioDao usuarioDao = new UsuarioDaoJpa();
+            Usuario usuario = usuarioDao.buscarUsuario(nomeUsuario);
+            ObjectMapper mapper = new ObjectMapper();
+            String usuarioJson = mapper.writeValueAsString(usuario);
+
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.setStatus(200);
+            PrintWriter out = resp.getWriter();
+            out.print(usuarioJson);
+            out.flush();
+        } catch (NullPointerException npe) {
+            resp.sendError(400, "Valor buscado inválido");
+            return;
+        } catch (NoResultException nre) {
+            resp.sendError(404, "Usuário não cadastrado");
+            return;
+        }
+    }               
+}
+```
+
+#### POST
+Através do ObjectMapper, mapeamos o .Json passado pela request em um objeto do tipo Usuario, que por sua vez é inserido no banco pelo método ``commitUsuario(usuario)`` chamado para um DAO recém criado que recebe este objeto. Note que qualquer transação realizada no banco é feita através da DAO:
+```
+@Override
+protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    Usuario usuario = mapper.readValue(req.getReader(), Usuario.class);
+
+    UsuarioDao usuarioDao = new UsuarioDaoJpa();
+    usuarioDao.commitUsuario(usuario);
+
+    String usuarioJson = mapper.writeValueAsString(usuario);
+    resp.setContentType("application/json");
+    resp.setCharacterEncoding("UTF-8");
+
+    resp.setStatus(201);
+    String location = req.getServerName() + ":" + req.getServerPort() + req.getContextPath() + "/usuario?nomeUsuario="
+            + usuario.getNomeUsuario();
+    resp.setHeader("Location", location);
+    PrintWriter out = resp.getWriter();
+    out.print(usuarioJson);
+    out.flush();
+}
+```
+Após a transação, é exibido o .Json do usuario recém criado.
+
+#### PUT
+Como o PUT deseja atualizar um registro existente, ele primeiro deve buscar este registro através do nome do usuário;<br>
+Já que a Id dos usuários é única, definimos a Id do objeto do tipo Usuario criado aqui como o valor encontrado pela busca. Finalmente salvamos as demais informações sobrescrevendo o que existia anteriormente pelas informações passadas através do .Json:
+```
+@Override
+protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    Usuario usuario = mapper.readValue(req.getReader(), Usuario.class);
+    UsuarioDao usuarioDao = new UsuarioDaoJpa();
+
+    String nomeUsuario = req.getParameter("nomeUsuario");
+    try{
+        usuario.setId(usuarioDao.buscarUsuario(nomeUsuario).getId());
+        usuarioDao.commitUsuario(usuario);
+    } catch(Exception e){
+        resp.sendError(404, "Usuario nao encontrado");
+        return;
+    }
+
+    resp.setContentType("application/json");
+    resp.setCharacterEncoding("UTF-8");
+    resp.setStatus(200);
+    PrintWriter out = resp.getWriter();
+    out.print("");
+    out.flush();
+}
+```
+
+#### DELETE
+Finalizando, aqui também criamos uma DAO que fará a transação no banco, recebendo o parâmetro ``nomeUsuario`` na request e passando este valor para o método ``removerUsuario(nomeUsuario)`` que discutimos na seção MODEL:
+```
+@Override
+protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    String nomeUsuario = req.getParameter("nomeUsuario");
+
+    UsuarioDao usuarioDao = new UsuarioDaoJpa();
+    try{
+        usuarioDao.removerUsuario(nomeUsuario);
+    } catch(Exception e){
+        resp.sendError(404, "Usuario nao encontrado");
+        return;
+    }
+
+    resp.setContentType("application/json");
+    resp.setCharacterEncoding("UTF-8");
+    resp.setStatus(200);
+    PrintWriter out = resp.getWriter();
+    out.print("");
+    out.flush();
+}
+```
