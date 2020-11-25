@@ -1,11 +1,12 @@
 # PADRÕES DE PROJETOS / LABORATÓRIO DE BANCO DE DADOS IV
 ## FATEC SÃO JOSÉ DOS CAMPOS - 2ºSEM/2020
 ### Professores
-• [Emanuel Mineda Carneiro](https://github.com/mineda)<br>
-• [Giuliano Araujo Bertoti](https://github.com/giulianobertoti)
+• [Emanuel Mineda Carneiro](https://github.com/mineda);<br>
+• [Giuliano Araujo Bertoti](https://github.com/giulianobertoti).
 ### Integrantes
-• [Lucas José Povinske](https://github.com/lucas-povinske)<br>
-• Rodrigo César Reis
+• [Lucas José Povinske](https://github.com/lucas-povinske);<br>
+• [Otavio Augusto Raposo Barreto](https://github.com/otavio-raposo);<br>
+• Rodrigo César Reis.
 
 ## 1. Apresentação
 Projeto com back-end em Java e front-end em Vue.js<br>
@@ -41,7 +42,7 @@ As colunas desta tabela representam todos os atributos da entidade:<br>
   • ``USU_ADMINISTRADOR``: Valor do tipo [DiscriminatorValue](https://docs.oracle.com/javaee/7/api/javax/persistence/DiscriminatorValue.html) da classe [Admin.java](https://github.com/rodrigocr16/padroes_projetos/blob/master/src/main/java/br/gov/sp/fatec/padroesprojetos/entity/Admin.java) que define se este é do tipo Usuário ou Administrador - por questões de privilégios;<br>
   • ``ADM_CLASSIFICACAO``: Valor inteiro de 01 a 05 inicialmente pensando para definir o tipo de acesso que aquele administrador possui.<br>
 
-### 2.ii) Classe Java
+### 2.ii) Entidade Java
 Ao analisar a classe ``Usuario.java`` é impossível não notar a relação dela com a tabela mencionada acima, já que seus atributos levam o nome e as identificações de suas tabelas correspondentes:
 ```
 01.  @Entity
@@ -88,4 +89,91 @@ Ao analisar a classe ``Usuario.java`` é impossível não notar a relação dela
 42.  }
 ```
 Na linha #03 vemos que para o banco esta classe possue uma hierarquia do tipo SingleTable, onde independente se um objeto é criado em uma ou outra das suas classes filhas, todos são passados para a mesma tabela;<br>
-Na linha #04 temos a propriedade que identifica a coluna na tabela que receberia o DiscriminatorValue como Usuário ou Administrador.
+Na linha #04 temos a propriedade que identifica a coluna na tabela que receberia o DiscriminatorValue como Usuário ou Administrador.<br>
+É possível notar também que Usuário herda a classe GeraId (que como o nome sugere, gera uma Id) e que possue uma relação de ONE-TO-MANY com a classe Personagem.
+
+### 2.iii) Classe DaoJpa
+O modelo MVC abordado trabalha com DAO e JPA para efetuar transações com o banco, servindo como nossa camada de persistência;<br>
+Os métodos descritos abaixo são utilizados pelo CONTROLLER para ler e gravar informações no nosso banco.<br>
+
+#### Buscar um Usuário:
+Existem duas opções quando é preciso buscar usuários: uma para retornar um único registro informando o valor nomeUsuario, que é único, e uma para retornar todos os registros existentes no banco;<br>
+O método ``buscarUsuario(nomeUsuario)`` recebe uma String que é utilizada como parâmetro em uma query no banco. Desta forma, apenas um resultado é retornado pela query, que finalmente é retornado pelo método:
+```
+@Override
+public Usuario buscarUsuario(String nomeUsuario) {
+    String jpql = "select u from Usuario u where u.nomeUsuario = :nomeUsuario";
+    TypedQuery<Usuario> query = em.createQuery(jpql, Usuario.class);
+    query.setParameter("nomeUsuario", nomeUsuario);
+    return query.getSingleResult();
+}
+```
+A outra opção é através da List ``todosUsuario()``, que simplesmente faz uma query sem cláusula WHERE, retornando todos os registros da tabela:
+```
+@Override
+public List<Usuario> todosUsuario() {
+    String jpql = "select u from Usuario u";
+    TypedQuery<Usuario> query = em.createQuery(jpql, Usuario.class);
+    return query.getResultList();
+}
+```
+
+#### Cadastrar um novo Usuario:
+O cadastro de um novo usuário é feito em etapas, através de três métodos que conferem maior versatilidade à aplicação, permitindo realizar apenas parte do processo, se preciso for.<br>
+
+A primeira etapa é feita com o método ``salvarUsuario(usuario)``, que verifica se o usuário possui uma Id, salvando um novo registro em caso positivo, e atualizado o que for encontrado com aquela Id em caso negativo:
+```
+@Override
+public Usuario salvarUsuario(Usuario usuario){
+    if(usuario.getId() == null){
+        em.persist(usuario);
+    } else {
+        em.merge(usuario);
+    }   return usuario;
+}
+```
+A outra etapa do processo de um novo cadastro é feita pelo método ``commitUsuario(usuario)``, que executa o método acima criando ou atualizando o usuário existente, e então faz a persistência desta alteração no banco. Caso haja algum erro, é feito o rollback das alterações:
+```
+@Override
+public Usuario commitUsuario(Usuario usuario){
+    try{
+        em.getTransaction().begin();
+        salvarUsuario(usuario);
+        em.getTransaction().commit();
+        return usuario;
+    }
+    catch(PersistenceException pe){
+        pe.printStackTrace();
+        em.getTransaction().rollback();
+        throw new RuntimeException("Ocorreu um erro ao salvar o usuário: ", pe);
+    }
+}
+```
+O que define as informações que serão salvas no banco no caso de um novo cadastro é o método ``cadastrarUsuario(nomeUsuario, senha, nomeExibicao)``, que cria um novo objeto do tipo Usuario, define seus atributos obrigatórios através de setters, e finaliza com a chamada do método ``commitUsuario(usuario)`` abordado acima:
+```
+@Override
+public Usuario cadastrarUsuario(String nomeUsuario, String senha, String nomeExibicao) {
+    Usuario usuario = new Usuario();
+    usuario.setNomeUsuario(nomeUsuario);
+    usuario.setSenha(senha);
+    usuario.setNomeExibicao(nomeExibicao);
+    return commitUsuario(usuario);
+}
+```
+#### Alterar um Usuário:
+A forma como a criação de usuários é feita permite que utilizemos apenas uma parte do processo de criação, se preciso for. Com isso, o método mencionado ``salvarUsuario(usuario)`` mencionado anteriormente é o que utilizamos caso seja preciso atualizar um registro no banco, já que ele verifica se o usuário já existe no banco e atualiza o registro em caso positivo.
+
+#### Remover um Usuario:
+Através de uma busca no banco realizada pelo método ``buscarUsuario(nomeUsuario)`` o método de remoção ``removerUsuario(nomeUsuario)`` retorna uma RuntimeException caso a busca retorne nada, ou remove o usuário encontrado, finalizando com um commit:
+```
+@Override
+public void removerUsuario(String nomeUsuario) {
+    Usuario usuario = buscarUsuario(nomeUsuario);
+    if(usuario == null){
+        throw new RuntimeException("O usuário solicitado não foi encontrado.");
+    }
+    em.getTransaction().begin();
+    em.remove(usuario);
+    em.getTransaction().commit();
+}
+```
